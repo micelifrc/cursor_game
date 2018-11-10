@@ -1,0 +1,3 @@
+/home/mich/Desktop/code/C++/ncurses/RPGgame/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/mich/Desktop/code/C++/ncurses/RPGgame/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/mich/Desktop/code/C++/ncurses/RPGgame/cmake-build-debug/CMakeFiles/RPGgame.dir
