@@ -1,2 +1,2 @@
-translation_exercises: main.cpp Screen.cpp
-	g++ main.cpp Screen.cpp -lncurses -o rpg.out 
+translation_exercises: main.cpp Background.cpp
+	g++ main.cpp Background.cpp -lncurses -o rpg.out 

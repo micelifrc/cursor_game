@@ -2,14 +2,15 @@
 // Created by mich on 10/11/18.
 //
 
-#ifndef RPGGAME_SCREEN_H
-#define RPGGAME_SCREEN_H
+#ifndef RPGGAME_BACKGROUND_H
+#define RPGGAME_BACKGROUND_H
 
 
 // This is a structure to draw a full page in the terminal
 
 #include <iostream>
 #include <array>
+#include <unordered_map>
 #include "ncurses.h"
 
 // screen size
@@ -20,6 +21,8 @@ enum struct Compass : unsigned {
    north = 0, east = 1, south =2 , west = 3
 };
 
+Compass make_compass(unsigned n);
+
 struct Coord {
    int x, y;
 
@@ -27,6 +30,8 @@ struct Coord {
 
    explicit Coord(Compass cps);
 };
+
+Coord make_coord_through_compass(unsigned n);
 
 struct charPoint {
    char output_char;
@@ -38,34 +43,33 @@ struct charPoint {
          : output_char{output_char_}, color_code{color_code_}, is_solid{is_solid_}, is_bold{is_blod_} {}
 };
 
-void print(WINDOW *window, const charPoint &pt, unsigned y, unsigned x);
+void print(WINDOW *window, const charPoint &pt, int y, int x);
 
 void print(WINDOW *window, const charPoint &pt, Coord cd = Coord());
 
-template<typename Point = charPoint>  // should have a function print(WINDOW*, const Point&, const Coord)->void
-struct Screen {
-   std::array<std::array<Point, length>, height> matrix;
+struct Background {
+   std::array<std::array<const charPoint*, length>, height> matrix;
 
-   Screen() = default;
+   Background();
 
-   explicit Screen(std::array<std::array<Point, length>, height> matrix_) : matrix{matrix_} {}
+   explicit Background(const std::unordered_map<char, charPoint> &images_map);
 
-   explicit Screen(std::string const &input_string);
+   explicit Background(std::array<std::array<const charPoint*, length>, height> matrix_) : matrix{matrix_} {}
 
-   void add_point(Point point, unsigned x, unsigned y);
+   Background(const std::unordered_map<char, charPoint> &images_map, std::string const &input_string);
 
-   void add_row(std::array<Point, length> row, unsigned y);
+   void add_point(charPoint* point, unsigned x, unsigned y);
+   void add_point(const std::unordered_map<char, charPoint> &images_map, char ch, unsigned x, unsigned y);
 
-   void add_column(std::array<Point, height> column, unsigned x);
+   void add_row(std::array<const charPoint*, length> row, unsigned y);
+   void add_row(const std::unordered_map<char, charPoint> &images_map, std::string row, unsigned y);
 
-   Point &get_point(unsigned x, unsigned y) { return matrix[y][x]; }
+   void add_column(std::array<const charPoint*, height> column, unsigned x);
+   void add_column(const std::unordered_map<char, charPoint> &images_map, std::string column, unsigned x);
 
-   Point const &get_point(unsigned x, unsigned y) const { return matrix[y][x]; }
+   charPoint const &get_point(unsigned x, unsigned y) const { return *matrix[y][x]; }
 };
 
-template<typename Point>
-void print(WINDOW *window, const Screen<Point> &screen);
+void print(WINDOW *window, const Background &bg);
 
-#include "Screen.tpp"
-
-#endif //RPGGAME_SCREEN_H
+#endif //RPGGAME_BACKGROUND_H
