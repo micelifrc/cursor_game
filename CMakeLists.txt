@@ -3,4 +3,4 @@ project(RPGgame)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(RPGgame main.cpp Background.cpp)
+add_executable(RPGgame main.cpp Scenario.cpp Background.cpp)

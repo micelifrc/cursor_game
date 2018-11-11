@@ -1,14 +1,14 @@
 #include <iostream>
 #include <string>
 #include <unordered_map>
-#include "Background.h"
+#include "Scenario.h"
 
 // this should be a member function called in the constructor of the game. The game will contain a Screen, together with several other objects (like
 void initialize_character_map(std::unordered_map<char, charPoint> &map) {
 #ifndef INITIALIZE_CHARACTER_MAP
 #define INITIALIZE_CHARACTER_MAP
    start_color();
-   init_pair(1, COLOR_YELLOW, COLOR_BLACK);  // protagonist This should be called only in the constructor of the game
+   init_pair(1, COLOR_YELLOW, COLOR_BLUE);  // protagonist This should be called only in the constructor of the game
    init_pair(2, COLOR_WHITE, COLOR_BLACK);  // character
    map['@'] = charPoint('@', 2, true);
    init_pair(3, COLOR_BLACK, COLOR_BLACK);  // asphalt
@@ -30,9 +30,7 @@ int main() {
    initscr();
    std::unordered_map<char, charPoint> images_map;
    initialize_character_map(images_map);
-   std::string grass(length * height, 'g');
-   Background background(images_map, grass);
-   print(stdscr, background);
+   Scenario(images_map, "backgrounds/all_grass.txt", 0, 0).main(stdscr);
    endwin();
    return 0;
 }

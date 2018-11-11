@@ -38,21 +38,28 @@ Coord::Coord(const Compass cps) {
    }
 }
 
+Coord &Coord::operator+=(const Coord &rhs) {
+   x += rhs.x;
+   y += rhs.y;
+   return *this;
+}
+
+Coord &Coord::operator-=(const Coord &rhs) {
+   x -= rhs.x;
+   y -= rhs.y;
+   return *this;
+}
+
 Coord make_coord_through_compass(unsigned n) {
    return Coord(Compass(n));
 }
 
-
-void print(WINDOW *window, const charPoint &pt, int x, int y) {
-   wattron(window, COLOR_PAIR(pt.color_code));
-   if (pt.is_bold) wattron(window, A_BOLD);
-   mvwprintw(window, y, x, "%c", pt.output_char);
-   if (pt.is_bold) wattroff(window, A_BOLD);
-   wattroff(window, COLOR_PAIR(pt.color_code));
-}
-
-void print(WINDOW *window, const charPoint &pt, const Coord cd) {
-   print(window, pt, cd.x, cd.y);
+void charPoint::print(WINDOW *window, int x, int y) const {
+   wattron(window, COLOR_PAIR(color_code));
+   if (is_bold) wattron(window, A_BOLD);
+   mvwprintw(window, y, x, "%c", output_char);
+   if (is_bold) wattroff(window, A_BOLD);
+   wattroff(window, COLOR_PAIR(color_code));
 }
 
 Background::Background() {
@@ -105,16 +112,18 @@ void Background::add_column(const std::unordered_map<char, charPoint> &images_ma
    for (unsigned y = 0; y != height; ++y) add_point(images_map, column[y], x, y);
 }
 
-void print(WINDOW *window, const Background &Background) {
-   wclear(window);
+void Background::print(WINDOW *window) const {
    for (unsigned y = 0; y != height; ++y) {
       for (unsigned x = 0; x != length; ++x) {
-         print(window, Background.get_point(x, y), x, y);
+         print(window, Coord(x, y));
       }
    }
-   curs_set(0);
-   noecho();
-   cbreak();
-   wrefresh(window);
-   int gtc = getch();
+}
+
+void Background::print(WINDOW *window, Coord cd) const {
+   if(is_nullptr(cd)){
+      mvwprintw(window, cd.y, cd.x, " ");
+   }else {
+      get_point(cd).print(window, cd.x, cd.y);
+   }
 }
