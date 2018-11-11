@@ -4,7 +4,7 @@
 
 #include "Screen.h"
 
-Coord::Coord(Compass cps) {
+Coord::Coord(const Compass cps) {
    switch (cps) {
       case Compass::north : {
          x = 0;
@@ -29,24 +29,38 @@ Coord::Coord(Compass cps) {
    }
 }
 
-charPoint::charPoint(char ch) : is_bold{false} {
+charPoint::charPoint(char ch) : is_solid{false}, is_bold{false} {
    switch (ch) {
       case '@': {  // character
+#ifndef CHARACTER_COLOR
+#define CHARACTER_COLOR 2
+         init_pair(CHARACTER_COLOR, COLOR_WHITE, COLOR_BLACK);  // character
+#endif
          output_char = '@';
-         color_code = 2;
+         color_code = CHARACTER_COLOR;
          is_solid = true;
+         return;
+      }
+      case 'a': {  // asphalt
+#ifndef ASPHALT_COLOR
+         #define ASPHALT_COLOR 3
+         init_pair(ASPHALT_BLACK, COLOR_WHITE, COLOR_BLACK);  // character
+#endif
+         output_char = ' ';
+         color_code = ASPHALT_COLOR;
          return;
       }
       case 'g': {  // grass
+#ifndef GRASS_COLOR
+#define GRASS_COLOR 3
          output_char = '^';
-         color_code = 3;
-         is_solid = false;
+
+         color_code = GRASS_COLOR;
          return;
       }
-      case 'w': {  // water
-         output_char = '~';
+      case 'y': {  // tree
+         output_char = 'Y';
          color_code = 4;
-         is_solid = true;
          return;
       }
       case 'm': {  // mountain
@@ -55,14 +69,19 @@ charPoint::charPoint(char ch) : is_bold{false} {
          is_solid = true;
          return;
       }
+      case 'w': {  // water
+         output_char = '~';
+         color_code =;
+         is_solid = true;
+         return;
+      }
       case 'd': {  // desert
          output_char = '~';
          color_code = 6;
-         is_solid = false;
          return;
       }
-      default:{
-         throw std::logic_error("Invalid costructor of charPoint with input "+ch);
+      default: {
+         throw std::logic_error("Invalid costructor of charPoint with input " + ch);
       }
    }
 }

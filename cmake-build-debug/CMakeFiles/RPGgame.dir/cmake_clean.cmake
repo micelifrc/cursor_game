@@ -1,5 +1,6 @@
 file(REMOVE_RECURSE
   "CMakeFiles/RPGgame.dir/main.cpp.o"
+  "CMakeFiles/RPGgame.dir/Screen.cpp.o"
   "RPGgame.pdb"
   "RPGgame"
 )

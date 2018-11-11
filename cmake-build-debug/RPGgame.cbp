@@ -84,6 +84,12 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="/home/mich/Desktop/code/C++/ncurses/RPGgame/Screen.cpp">
+			<Option target="RPGgame"/>
+		</Unit>
+		<Unit filename="/home/mich/Desktop/code/C++/ncurses/RPGgame/Screen.h">
+			<Option target="RPGgame"/>
+		</Unit>
 		<Unit filename="/home/mich/Desktop/code/C++/ncurses/RPGgame/main.cpp">
 			<Option target="RPGgame"/>
 		</Unit>

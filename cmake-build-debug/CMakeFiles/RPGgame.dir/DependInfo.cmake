@@ -4,6 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
+  "/home/mich/Desktop/code/C++/ncurses/RPGgame/Screen.cpp" "/home/mich/Desktop/code/C++/ncurses/RPGgame/cmake-build-debug/CMakeFiles/RPGgame.dir/Screen.cpp.o"
   "/home/mich/Desktop/code/C++/ncurses/RPGgame/main.cpp" "/home/mich/Desktop/code/C++/ncurses/RPGgame/cmake-build-debug/CMakeFiles/RPGgame.dir/main.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")

@@ -123,6 +123,33 @@ RPGgame/fast:
 	$(MAKE) -f CMakeFiles/RPGgame.dir/build.make CMakeFiles/RPGgame.dir/build
 .PHONY : RPGgame/fast
 
+Screen.o: Screen.cpp.o
+
+.PHONY : Screen.o
+
+# target to build an object file
+Screen.cpp.o:
+	$(MAKE) -f CMakeFiles/RPGgame.dir/build.make CMakeFiles/RPGgame.dir/Screen.cpp.o
+.PHONY : Screen.cpp.o
+
+Screen.i: Screen.cpp.i
+
+.PHONY : Screen.i
+
+# target to preprocess a source file
+Screen.cpp.i:
+	$(MAKE) -f CMakeFiles/RPGgame.dir/build.make CMakeFiles/RPGgame.dir/Screen.cpp.i
+.PHONY : Screen.cpp.i
+
+Screen.s: Screen.cpp.s
+
+.PHONY : Screen.s
+
+# target to generate assembly for a file
+Screen.cpp.s:
+	$(MAKE) -f CMakeFiles/RPGgame.dir/build.make CMakeFiles/RPGgame.dir/Screen.cpp.s
+.PHONY : Screen.cpp.s
+
 main.o: main.cpp.o
 
 .PHONY : main.o
@@ -159,6 +186,9 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... RPGgame"
+	@echo "... Screen.o"
+	@echo "... Screen.i"
+	@echo "... Screen.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"

@@ -16,8 +16,8 @@
 #define height 55
 #define length 205
 
-enum struct Compass {
-   north, east, south, west
+enum struct Compass : unsigned {
+   north = 0, east = 1, south =2 , west = 3
 };
 
 struct Coord {
@@ -34,12 +34,8 @@ struct charPoint {
    bool is_solid;
    bool is_bold;
 
-   charPoint() : output_char{' '}, color_code{0}, is_solid{false}, is_bold{false} {}
-
-   explicit charPoint(char output_char_, unsigned color_code_, bool is_solid_ = false, bool is_blod_ = false)
+   explicit charPoint(char output_char_ = ' ', unsigned color_code_ = 0, bool is_solid_ = false, bool is_blod_ = false)
          : output_char{output_char_}, color_code{color_code_}, is_solid{is_solid_}, is_bold{is_blod_} {}
-
-   explicit charPoint(char ch);
 };
 
 void print(WINDOW *window, const charPoint &pt, unsigned y, unsigned x);
