@@ -39,7 +39,8 @@ inline Coord operator-(Coord lhs, const Coord& rhs) { return lhs -= rhs; }
 inline bool operator==(const Coord& lhs, const Coord& rhs) { return lhs.x == rhs.x and lhs.y == rhs.y; }
 inline bool operator!=(const Coord& lhs, const Coord& rhs) { return not (lhs == rhs); }
 
-Coord make_coord_through_compass(unsigned n);
+Coord make_coord_from_compass(unsigned n);
+Compass make_compass_from_coord(Coord const &cd);
 
 struct charPoint {
    char output_char;

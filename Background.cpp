@@ -50,8 +50,17 @@ Coord &Coord::operator-=(const Coord &rhs) {
    return *this;
 }
 
-Coord make_coord_through_compass(unsigned n) {
+Coord make_coord_from_compass(unsigned n) {
    return Coord(Compass(n));
+}
+
+Compass make_compass_from_coord(Coord const &cd){
+   if(cd.x != 0 and cd.y != 0) throw std::logic_error("Invalid call to make_compass_from_coord");
+   if(cd.x == 0){
+      return cd.y < 0 ? Compass::north : Compass::south;
+   }else{
+      return cd.x > 0 ? Compass::east : Compass::west;
+   }
 }
 
 void charPoint::print(WINDOW *window, int x, int y) const {

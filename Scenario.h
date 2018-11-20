@@ -61,6 +61,9 @@ public:
                    Coord initial_position) : Scenario(images_map, name_background_file, initial_position.x,
                                                       initial_position.y) {}
 
+   template <typename... Args>
+   void add_npc(Args... args) { dynamic_npcs.emplace_back(args...); };
+
    void main(WINDOW *window = stdscr);
 
 private:

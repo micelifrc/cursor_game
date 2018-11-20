@@ -3,6 +3,7 @@
 //
 
 #include <fstream>
+#include <ctime>
 #include "Scenario.h"
 
 bool DynamicCharacter::try_move(Coord cd, const Background &bg, std::vector<DynamicCharacter> const &dc,
@@ -76,30 +77,39 @@ void Scenario::main(WINDOW *window) {
    keypad(window, true);
    initial_print(window);
    std::vector<Coord> update_pos;
-   const char bell = '\a';
-   while (true) {
-      int command = update_print(window, update_pos);
-      update_pos.clear();
-      switch (command) {
-         case KEY_UP: {
-            dynamic_pc.try_move(Compass::north, background, dynamic_npcs, dynamic_pc, update_pos);
-            break;
+   while(true) {
+      std::clock_t start_time = clock();
+      timeout(10);  // the body of while loop will be stopped after 10 milliseconds
+      while (500.0 * (clock()-start_time) < CLOCKS_PER_SEC) {
+         int command = update_print(window, update_pos);
+         update_pos.clear();
+         switch (command) {
+            case KEY_UP: {
+               dynamic_pc.try_move(Compass::north, background, dynamic_npcs, dynamic_pc, update_pos);
+               break;
+            }
+            case KEY_RIGHT: {
+               dynamic_pc.try_move(Compass::east, background, dynamic_npcs, dynamic_pc, update_pos);
+               break;
+            }
+            case KEY_DOWN: {
+               dynamic_pc.try_move(Compass::south, background, dynamic_npcs, dynamic_pc, update_pos);
+               break;
+            }
+            case KEY_LEFT: {
+               dynamic_pc.try_move(Compass::west, background, dynamic_npcs, dynamic_pc, update_pos);
+               break;
+            }
+            case KEY_CLOSE :
+            case 27: {
+               return;
+            }
          }
-         case KEY_RIGHT: {
-            dynamic_pc.try_move(Compass::east, background, dynamic_npcs, dynamic_pc, update_pos);
-            break;
-         }
-         case KEY_DOWN: {
-            dynamic_pc.try_move(Compass::south, background, dynamic_npcs, dynamic_pc, update_pos);
-            break;
-         }
-         case KEY_LEFT: {
-            dynamic_pc.try_move(Compass::west, background, dynamic_npcs, dynamic_pc, update_pos);
-            break;
-         }
-         case KEY_CLOSE :
-         case 27: {
-            return;
+      }
+      for (auto &npc : dynamic_npcs) {
+         int randomic = std::rand() % 10;
+         if(randomic < 4) {
+            npc.try_move(Compass(randomic), background, dynamic_npcs, dynamic_pc, update_pos);
          }
       }
    }

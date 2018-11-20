@@ -30,7 +30,10 @@ int main() {
    initscr();
    std::unordered_map<char, charPoint> images_map;
    initialize_character_map(images_map);
-   Scenario(images_map, "backgrounds/all_grass.txt", 0, 0).main(stdscr);
+   Scenario scenario(images_map, "backgrounds/geo_map.txt", 0, 0);
+   charPoint stdnpc('@', 2, true);
+   scenario.add_npc(&stdnpc, 103, 23);
+   scenario.main(stdscr);
    endwin();
    return 0;
 }
