@@ -10,40 +10,44 @@
 #include "Background.h"
 
 struct DynamicCharacter {
-   const charPoint *character;
+   charPoint character;
    Coord position;
    Compass orientation;
 
-   explicit DynamicCharacter(const charPoint *character_ = nullptr, Coord position_ = Coord(),
-                             Compass orientation_ = Compass::south) : character{character_}, position{position_},
-                                                                      orientation{orientation_} {}
+   explicit DynamicCharacter(Coord position_ = Coord(), Compass orientation_ = Compass::south, bool is_bold_ = false,
+                             bool is_solid_ = true, unsigned color_code_ = 2) :
+         character(' ', color_code_, is_solid_, is_bold_), position{position_},
+         orientation{orientation_} { update_character(); }
 
-   DynamicCharacter(const charPoint *character_, int x, int y, Compass orientation_ = Compass::south) : character{
-         character_}, position(x, y), orientation{orientation_} {}
+   DynamicCharacter(int x, int y, Compass orientation_ = Compass::south, bool is_bold_ = false,
+                    bool is_solid_ = true, unsigned color_code_ = 2) :
+         DynamicCharacter(Coord(x, y), orientation_, is_bold_, is_solid_, color_code_) {}
 
-   inline void move(Compass cp) { move(Coord(cp)); }
+   bool
+   try_move_pc(Compass cp, const Background &bg, std::vector<DynamicCharacter> const &dc, const DynamicCharacter &pc);
 
-   inline void move(Coord cd) {
-      position += cd;
-      orientation = make_compass_from_coord(cd);
+   bool
+   try_move_npc(Compass cp, const Background &bg, std::vector<DynamicCharacter> const &dc, const DynamicCharacter &pc,
+                std::vector<Coord> &update_pos);
+
+   inline bool try_step_pc(const Background &bg, std::vector<DynamicCharacter> const &dc,
+                           const DynamicCharacter &pc) { return try_move_pc(orientation, bg, dc, pc); }
+
+   inline bool try_step_npc(const Background &bg, std::vector<DynamicCharacter> const &dc, const DynamicCharacter &pc,
+                            std::vector<Coord> &update_pos) {
+      return try_move_npc(orientation, bg, dc, pc, update_pos);
    }
 
-   inline bool try_move(Compass cp, const Background &bg, std::vector<DynamicCharacter> const &dc,
-                        const DynamicCharacter &pc) { return try_move(Coord(cp), bg, dc, pc); }
-
-   bool try_move(Coord cd, const Background &bg, std::vector<DynamicCharacter> const &dc, const DynamicCharacter &pc);
-
-   inline bool
-   try_move(Compass cp, const Background &bg, std::vector<DynamicCharacter> const &dc, const DynamicCharacter &pc,
-            std::vector<Coord> &update_pos) { return try_move(Coord(cp), bg, dc, pc, update_pos); }
-
-   bool try_move(Coord cp, const Background &bg, std::vector<DynamicCharacter> const &dc, const DynamicCharacter &pc,
-                 std::vector<Coord> &update_pos);
-
-   inline void print(WINDOW *window = stdscr) const { character->print(window, position); }
+   inline void print(WINDOW *window = stdscr) const { character.print(window, position); }
 
 private:
-   bool can_move(Coord cd, const Background &bg, std::vector<DynamicCharacter> const &dc, const DynamicCharacter &pc);
+   bool can_move(Compass cp, const Background &bg, std::vector<DynamicCharacter> const &dc, const DynamicCharacter &pc);
+
+   void rotate(Compass cp);
+
+   void move(Compass cp);
+
+   void update_character();
 };
 
 class Scenario {
@@ -58,18 +62,26 @@ public:
             int y = 0);
 
    inline Scenario(const std::unordered_map<char, charPoint> &images_map, std::string const &name_background_file,
-                   Coord initial_position) : Scenario(images_map, name_background_file, initial_position.x,
-                                                      initial_position.y) {}
+                   Coord initial_position) :
+         Scenario(images_map, name_background_file, initial_position.x, initial_position.y) {}
 
-   template <typename... Args>
+   template<typename... Args>
    void add_npc(Args... args) { dynamic_npcs.emplace_back(args...); };
+
+   void add_random_npcs(unsigned number);
 
    void main(WINDOW *window = stdscr);
 
 private:
+   bool is_free_position(Coord cd) const;
+
    void initial_print(WINDOW *window = stdscr) const;
 
-   int update_print(WINDOW *window, std::vector<Coord> const &update_coord) const;
+   void update_print(WINDOW *window, std::vector<Coord> &update_coord) const;
+
+   void move_pc(WINDOW *window);
+
+   void move_npcs(WINDOW *window, std::vector<Coord> &update_pos, bool &keep_moving);
 };
 
 

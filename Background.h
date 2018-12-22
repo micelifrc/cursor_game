@@ -32,6 +32,7 @@ struct Coord {
 
    Coord& operator+=(const Coord& rhs);
    Coord& operator-=(const Coord& rhs);
+   bool is_zero() const { return x == 0 and y == 0; }
 };
 
 inline Coord operator+(Coord lhs, const Coord& rhs) { return lhs += rhs; }
