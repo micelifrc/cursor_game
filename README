@@ -1,0 +1,4 @@
+This is a simple game with a cursor.
+The cursor can be moved using the keyboard arrows.
+Other solid characters (NPCs) move randomly on the map.
+The source code backgrounds_generator.cpp can be changed to create new maps to use in the game.
