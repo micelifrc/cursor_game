@@ -9,6 +9,14 @@
 #include <vector>
 #include "Background.h"
 
+class MarsigliaXorshift{
+   std::array<unsigned long, 3> coefficients;
+public:
+   MarsigliaXorshift();
+
+   unsigned rand(unsigned limit);
+};
+
 struct DynamicCharacter {
    charPoint character;
    Coord position;
@@ -55,6 +63,7 @@ class Scenario {
    std::vector<DynamicCharacter> dynamic_npcs;
    Background background;
    static const charPoint playing_character;
+   MarsigliaXorshift random_generator;
 public:
    Scenario() = default;
 
@@ -82,6 +91,10 @@ private:
    void move_pc(WINDOW *window);
 
    void move_npcs(WINDOW *window, std::vector<Coord> &update_pos, bool &keep_moving);
+
+   unsigned rand(unsigned limit) { return random_generator.rand(limit); }
+
+   static bool kbhit();
 };
 
 

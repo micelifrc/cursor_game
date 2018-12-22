@@ -11,7 +11,7 @@
 #include <iostream>
 #include <array>
 #include <unordered_map>
-#include "ncurses.h"
+#include <ncurses.h>
 
 // screen size
 #define height 55

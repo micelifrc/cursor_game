@@ -31,7 +31,7 @@ int main() {
    std::unordered_map<char, charPoint> images_map;
    initialize_character_map(images_map);
    Scenario scenario(images_map, "backgrounds/geo_map.txt", 0, 0);
-   scenario.add_random_npcs(5);
+   scenario.add_random_npcs(42);
    scenario.main(stdscr);
    endwin();
    return 0;

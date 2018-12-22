@@ -3,9 +3,33 @@
 //
 
 #include <fstream>
+#include <random>
+#include <limits>
 #include <chrono>
 #include <thread>
+#include <stdio.h>
+#include <termios.h>
+#include <sys/ioctl.h>
 #include "Scenario.h"
+
+MarsigliaXorshift::MarsigliaXorshift(){
+   std::random_device rd;
+   std::mt19937_64 eng(rd());
+   std::uniform_int_distribution<unsigned long> distr;
+   coefficients[0] = distr(eng);
+   coefficients[1] = distr(eng);
+   coefficients[2] = distr(eng);
+}
+
+unsigned MarsigliaXorshift::rand(unsigned limit){
+   coefficients[0] ^= coefficients[0] << 16;
+   coefficients[0] ^= coefficients[0] >> 5;
+   unsigned long temp = coefficients[0] << 1;
+   coefficients[0] = coefficients[1];
+   coefficients[1] = coefficients[2];
+   coefficients[2] = temp ^ coefficients[0] ^ coefficients[1];
+   return static_cast<unsigned>(coefficients[2] % limit);
+}
 
 void DynamicCharacter::update_character() {
    switch (orientation) {
@@ -173,9 +197,10 @@ void Scenario::add_random_npcs(unsigned number) {
          throw std::logic_error("No free space for call of Scenario::add_random_npcs(unsigned)");
       }
       while (true) {
-         Coord position(std::rand() % length, std::rand() % height);
+         unsigned candidate = rand(length * height * 4);
+         Coord position(candidate % length, (candidate / length) % height);
          if (is_free_position(position)) {
-            add_npc(position, Compass(std::rand() % 4));
+            add_npc(position, Compass(candidate / (length * height)));
             --number;
             break;
          }
@@ -217,6 +242,10 @@ void Scenario::move_pc(WINDOW *window) {
             return;
          }
       }
+      std::this_thread::sleep_for(std::chrono::milliseconds(35));
+      while(kbhit()){
+         wgetch(window);
+      }
    }
 }
 
@@ -224,7 +253,7 @@ void Scenario::move_npcs(WINDOW *window, std::vector<Coord> &update_pos, bool &k
    using namespace std::chrono_literals;
    while (keep_moving) {
       for (auto &npc : dynamic_npcs) {
-         int randomic = std::rand() % 12;
+         unsigned randomic = rand(12);
          if (randomic < 4) {
             npc.try_move_npc(Compass(randomic), background, dynamic_npcs, dynamic_pc, update_pos);
          } else if (randomic < 6) {
@@ -232,6 +261,23 @@ void Scenario::move_npcs(WINDOW *window, std::vector<Coord> &update_pos, bool &k
          }
       }
       update_print(window, update_pos);
-      std::this_thread::sleep_for(0.25s);
+      std::this_thread::sleep_for(std::chrono::milliseconds(210));
    }
+}
+
+bool Scenario::kbhit()
+{
+   termios term;
+   tcgetattr(0, &term);
+
+   termios term2 = term;
+   term2.c_lflag &= ~ICANON;
+   tcsetattr(0, TCSANOW, &term2);
+
+   int byteswaiting;
+   ioctl(0, FIONREAD, &byteswaiting);
+
+   tcsetattr(0, TCSANOW, &term);
+
+   return byteswaiting > 0;
 }
